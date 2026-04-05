@@ -1086,6 +1086,13 @@ dependencies = [
 ]
 
 [package.dev-dependencies]
+ci = [
+    { name = "detect-secrets" },
+    { name = "mypy" },
+    { name = "pytest" },
+    { name = "pytest-cov" },
+    { name = "ruff" },
+]
 dev = [
     { name = "detect-secrets" },
     { name = "mypy" },
@@ -1113,6 +1120,13 @@ requires-dist = [
 ]
 
 [package.metadata.requires-dev]
+ci = [
+    { name = "detect-secrets", specifier = ">=1.5.0" },
+    { name = "mypy", specifier = ">=1.20.0" },
+    { name = "pytest", specifier = ">=8.3.0" },
+    { name = "pytest-cov", specifier = ">=6.0.0" },
+    { name = "ruff", specifier = ">=0.15.9" },
+]
 dev = [
     { name = "detect-secrets", specifier = ">=1.5.0" },
     { name = "mypy", specifier = ">=1.20.0" },

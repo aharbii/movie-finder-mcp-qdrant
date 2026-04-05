@@ -1,3 +1,5 @@
+from functools import lru_cache
+
 from pydantic import Field
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
@@ -23,4 +25,7 @@ class RAGConfig(BaseSettings):
     )
 
 
-settings = RAGConfig()
+@lru_cache(maxsize=1)
+def get_settings() -> RAGConfig:
+    """Return the singleton RAGConfig (cached after first call)."""
+    return RAGConfig()

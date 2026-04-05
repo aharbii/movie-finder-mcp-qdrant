@@ -48,12 +48,15 @@ def cosine_similarity(v: list[float], w: list[float]) -> float:
         w (list[float]): second vector
 
     Returns:
-        float: cosine similarity value
+        float: cosine similarity value (0.0 if one vector has zero magnitude)
     """
     dot = dot_product(v, w)
 
     v_mag = magnitude(v)
     w_mag = magnitude(w)
+
+    if v_mag == 0 or w_mag == 0:
+        return 0.0
 
     similarity = dot / (v_mag * w_mag)
     return similarity

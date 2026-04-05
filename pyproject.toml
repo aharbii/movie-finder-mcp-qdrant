@@ -26,9 +26,13 @@ dependencies = [
 lint = ["ruff>=0.15.9", "mypy>=1.20.0"]
 test = ["pytest>=8.3.0", "pytest-cov>=6.0.0"]
 dev = [
+    { include-group = "ci" },
+    "pre-commit>=4.5.1",
+    "detect-secrets>=1.5.0",
+]
+ci = [
     { include-group = "lint" },
     { include-group = "test" },
-    "pre-commit>=4.5.1",
     "detect-secrets>=1.5.0",
 ]
 
@@ -60,7 +64,7 @@ indent-style = "space"
 
 [tool.mypy]
 python_version = "3.13"
-mypy_path = "src:tests"
+mypy_path = "src"
 strict = true
 explicit_package_bases = true
 namespace_packages = true

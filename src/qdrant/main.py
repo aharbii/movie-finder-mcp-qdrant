@@ -1,3 +1,4 @@
+from functools import lru_cache
 from typing import Any
 
 from mcp.server.fastmcp import FastMCP
@@ -5,13 +6,25 @@ from openai import OpenAI
 from qdrant_client import QdrantClient
 from qdrant_client.http import models
 
-from qdrant.config import settings
+from qdrant.config import get_settings
 from qdrant.math import search
 from qdrant.models.search import QdrantSearchResult
 
 mcp = FastMCP("qdrant-evaluator")
-openai_client = OpenAI(api_key=settings.openai_api_key)
-qdrant_client = QdrantClient(url=settings.qdrant_url, api_key=settings.qdrant_api_key_ro)
+
+
+@lru_cache(maxsize=1)
+def get_openai_client() -> OpenAI:
+    """Return the singleton OpenAI client."""
+    settings = get_settings()
+    return OpenAI(api_key=settings.openai_api_key)
+
+
+@lru_cache(maxsize=1)
+def get_qdrant_client() -> QdrantClient:
+    """Return the singleton QdrantClient."""
+    settings = get_settings()
+    return QdrantClient(url=settings.qdrant_url, api_key=settings.qdrant_api_key_ro)
 
 
 @mcp.tool()
@@ -26,6 +39,8 @@ def embed_text(text: str) -> list[float]:
         list[float]: Embedded vector for the provided text
     """
     try:
+        settings = get_settings()
+        openai_client = get_openai_client()
         response = openai_client.embeddings.create(
             input=text, model=settings.openai_embedding_model
         )
@@ -47,8 +62,11 @@ def qdrant_search(query: str, limit: int = 5) -> list[QdrantSearchResult]:
     Returns:
         list[QdrantSearchResult]: List of candidates with distance scores
     """
-
     try:
+        settings = get_settings()
+        openai_client = get_openai_client()
+        qdrant_client = get_qdrant_client()
+
         query_vector = openai_client.embeddings.create(
             input=query,
             model=settings.openai_embedding_model,
@@ -84,6 +102,9 @@ def get_movie_data(title: str) -> list[dict[str, Any]]:
         list[dict[str, Any]]: List of movies matches the title with their metadata
     """
     try:
+        settings = get_settings()
+        qdrant_client = get_qdrant_client()
+
         movie_filter = models.Filter(
             must=[models.FieldCondition(key="title", match=models.MatchValue(value=title))]
         )
@@ -118,6 +139,9 @@ def compare_cosine_similarity(text1: str, text2: str) -> float:
         float: Cosine Similarity percentage
     """
     try:
+        settings = get_settings()
+        openai_client = get_openai_client()
+
         query_vector1 = openai_client.embeddings.create(
             input=text1,
             model=settings.openai_embedding_model,
@@ -154,9 +178,13 @@ def get_similar_movies_by_title(title: str, limit: int = 5) -> list[QdrantSearch
         if not get_movie_data_result:
             return []
 
-        movie_plot = str(get_movie_data_result[0]["payload"]["plot"])
+        payload = get_movie_data_result[0].get("payload", {})
+        movie_plot = payload.get("plot")
 
-        qdrant_search_result: list[QdrantSearchResult] = qdrant_search(movie_plot, limit)
+        if not movie_plot:
+            return []
+
+        qdrant_search_result: list[QdrantSearchResult] = qdrant_search(str(movie_plot), limit)
         return qdrant_search_result
     except Exception as e:
         raise RuntimeError(f"Failed to get similar movies by title: {str(e)}") from e
@@ -171,6 +199,9 @@ def get_collection_status() -> dict[str, Any]:
         dict: Collection statistics including point count and vector size.
     """
     try:
+        settings = get_settings()
+        qdrant_client = get_qdrant_client()
+
         collection_info = qdrant_client.get_collection(
             collection_name=settings.qdrant_collection_name
         )
@@ -192,8 +223,11 @@ def filtered_search(query: str, genre: str, limit: int = 5) -> list[QdrantSearch
     Returns:
         List[QdrantSearchResult]: List of filtered candidates with distance scores
     """
-
     try:
+        settings = get_settings()
+        openai_client = get_openai_client()
+        qdrant_client = get_qdrant_client()
+
         query_vector = openai_client.embeddings.create(
             input=query,
             model=settings.openai_embedding_model,
@@ -208,7 +242,7 @@ def filtered_search(query: str, genre: str, limit: int = 5) -> list[QdrantSearch
             collection_name=settings.qdrant_collection_name,
             with_payload=True,
             limit=limit,
-            filter=genre_filter,
+            query_filter=genre_filter,
         )
 
         return [
@@ -233,9 +267,12 @@ def scroll_movies_by_director(director: str, limit: int = 5) -> list[dict[str, A
         limit (int, optional): The maximum number of results to return. Defaults to 5.
 
     Returns:
-        list[dict[str, Any]: List of movies directed by the director with distance scores
+        list[dict[str, Any]]: List of movies directed by the director with distance scores
     """
     try:
+        settings = get_settings()
+        qdrant_client = get_qdrant_client()
+
         director_filter = models.Filter(
             must=[models.FieldCondition(key="director", match=models.MatchValue(value=director))]
         )
