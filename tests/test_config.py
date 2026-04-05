@@ -30,7 +30,8 @@ def test_rag_config_defaults(monkeypatch: pytest.MonkeyPatch) -> None:
     monkeypatch.delenv("QDRANT_COLLECTION_NAME", raising=False)
     monkeypatch.delenv("OPENAI_EMBEDDING_MODEL", raising=False)
 
-    config = RAGConfig()
+    # Pass _env_file=None to ignore any local .env file created by `make dev`
+    config = RAGConfig(_env_file=None)
 
     assert config.qdrant_collection_name == "text-embedding-3-large"
     assert config.openai_embedding_model == "text-embedding-3-large"
