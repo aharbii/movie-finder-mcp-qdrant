@@ -38,7 +38,6 @@ help:
 init:
 	@if [ ! -f .env ]; then cp .env.example .env && echo ">>> .env created from .env.example"; fi
 	uv sync
-	uv run pre-commit install
 
 dev:
 	@if [ ! -f .env ]; then cp .env.example .env && echo ">>> .env created from .env.example"; fi

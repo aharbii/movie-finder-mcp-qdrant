@@ -35,7 +35,7 @@ pipeline {
                         fi
                     '''
                 }
-                sh 'make init'
+                sh 'make dev'
             }
         }
 

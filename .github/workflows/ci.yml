@@ -22,7 +22,7 @@ jobs:
         run: uv python install 3.13
 
       - name: Setup environment
-        run: make init
+        run: make dev
 
       - name: Run linting
         run: make lint
