@@ -115,7 +115,7 @@ def compare_cosine_similarity(text1: str, text2: str) -> float:
         text2 (str): The second text to compare with
 
     Returns:
-        float: Cosine Similarity percentage
+        float: Cosine Similarity
     """
     try:
         query_vector1 = openai_client.embeddings.create(
@@ -233,7 +233,7 @@ def scroll_movies_by_director(director: str, limit: int = 5) -> list[dict[str, A
         limit (int, optional): The maximum number of results to return. Defaults to 5.
 
     Returns:
-        list[dict[str, Any]: List of movies directed by the director with distance scores
+        list[dict[str, Any]]: List of movies directed by the director with distance scores
     """
     try:
         director_filter = models.Filter(

@@ -17,7 +17,7 @@
 ### Code quality
 
 - [ ] `make lint` passes with zero errors
-- [ ] `make test` passes with zero failures
+- [ ] `make check` passes with zero failures
 - [ ] New logic has unit tests
 - [ ] No real API calls in tests (mocked at HTTP boundary)
 - [ ] No secrets or credentials added to code or test fixtures
