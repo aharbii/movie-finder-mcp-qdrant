@@ -24,3 +24,9 @@ def test_cosine_similarity() -> None:
     v2 = [1.0, 1.0]
     w2 = [2.0, 2.0]
     assert cosine_similarity(v2, w2) == pytest.approx(1.0)  # Same direction vectors
+
+
+def test_cosine_similarity_zero_vector() -> None:
+    v = [0.0, 0.0]
+    w = [1.0, 1.0]
+    assert cosine_similarity(v, w) == 0.0

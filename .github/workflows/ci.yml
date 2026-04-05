@@ -37,6 +37,9 @@ jobs:
       - name: Run typechecking
         run: make typecheck
 
+      - name: Run secrets detection
+        run: make detect-secrets
+
       - name: Run tests with coverage
         run: make test-coverage
 

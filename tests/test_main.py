@@ -1,4 +1,4 @@
-from unittest.mock import MagicMock
+from unittest.mock import MagicMock, patch
 
 import pytest
 from qdrant_client.http.models import Record, ScoredPoint
@@ -9,10 +9,33 @@ from qdrant.main import (
     filtered_search,
     get_collection_status,
     get_movie_data,
+    get_openai_client,
+    get_qdrant_client,
     get_similar_movies_by_title,
     qdrant_search,
     scroll_movies_by_director,
 )
+
+
+def test_factory_functions_coverage() -> None:
+    """Cover the return statements of the factory functions by mocking classes."""
+    with patch("qdrant.main.OpenAI") as mock_openai_cls:
+        qdrant_client = get_openai_client()
+        assert qdrant_client is mock_openai_cls.return_value
+
+    with patch("qdrant.main.QdrantClient") as mock_qdrant_cls:
+        openai_client = get_qdrant_client()
+        assert openai_client is mock_qdrant_cls.return_value
+
+
+def test_get_similar_movies_missing_plot_coverage(mock_qdrant_client: MagicMock) -> None:
+    """Cover the 'if not movie_plot' return statement."""
+    mock_qdrant_client.scroll.return_value = (
+        [Record(id=1, payload={"title": "No Plot Movie"}, vector=None, shard_key=None)],
+        None,
+    )
+    result = get_similar_movies_by_title("No Plot Movie")
+    assert result == []
 
 
 def test_embed_text(mock_openai_client: MagicMock) -> None:
