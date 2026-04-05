@@ -82,7 +82,9 @@ def test_qdrant_search(mock_openai_client: MagicMock, mock_qdrant_client: MagicM
     assert call_kwargs["limit"] == 2
 
 
-def test_qdrant_search_exception(mock_openai_client: MagicMock) -> None:
+def test_qdrant_search_exception(
+    mock_openai_client: MagicMock, mock_qdrant_client: MagicMock
+) -> None:
     mock_openai_client.embeddings.create.side_effect = Exception("Qdrant Error")
 
     with pytest.raises(RuntimeError, match="Failed to search Qdrant"):
@@ -209,7 +211,9 @@ def test_filtered_search(mock_openai_client: MagicMock, mock_qdrant_client: Magi
     assert result[0].id == 1
 
 
-def test_filtered_search_exception(mock_openai_client: MagicMock) -> None:
+def test_filtered_search_exception(
+    mock_openai_client: MagicMock, mock_qdrant_client: MagicMock
+) -> None:
     mock_openai_client.embeddings.create.side_effect = Exception("API Error")
 
     with pytest.raises(RuntimeError, match="Failed to perform filtered search"):

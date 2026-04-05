@@ -5,6 +5,14 @@ import pytest
 
 
 @pytest.fixture(autouse=True)
+def mock_env(monkeypatch: pytest.MonkeyPatch) -> None:
+    """Set dummy environment variables for tests to avoid Pydantic validation errors."""
+    monkeypatch.setenv("QDRANT_URL", "https://localhost:6333")
+    monkeypatch.setenv("QDRANT_API_KEY_RO", "dummy-key")
+    monkeypatch.setenv("OPENAI_API_KEY", "dummy-key")
+
+
+@pytest.fixture(autouse=True)
 def reset_config_cache() -> Generator[None]:
     from qdrant.config import get_settings
     from qdrant.main import get_openai_client, get_qdrant_client
