@@ -16,8 +16,12 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 - **Diagnostic Tool `get_collection_status`:** Retrieves high-level Qdrant database health metrics including total point count and vector dimension size.
 - **Diagnostic Tool `filtered_search`:** Performs a hybrid vector similarity search constrained by a strict payload filter (e.g., `genre`) to debug metadata filtering pipelines.
 - **Diagnostic Tool `scroll_movies_by_director`:** Performs exact-match retrieval for all movies by a specific director using the Scroll API.
-- **Project Tooling:** Expanded `Makefile` with `dev`, `test-coverage`, `detect-secrets`, `fix`, and `clean` targets to support local DX and CI pipelines.
+- **Project Tooling:** Expanded `Makefile` with `dev`, `ci`, `test-coverage`, `detect-secrets`, `fix`, and `clean` targets to support local DX and CI pipelines.
 - **Ignore Rules:** Updated `.gitignore` to exclude IDE configs, test coverage reports (`coverage.xml`, `htmlcov/`), and secrets.
 - **Testing Infrastructure:** Added comprehensive Pytest suite mocking `qdrant_client` and `openai_client` globally, achieving 99% test coverage.
-- **Continuous Integration:** Added `.github/workflows/ci.yml` (GitHub Actions) and `Jenkinsfile` for automated linting, typechecking, and coverage reporting on PRs and `main`.
+- **Continuous Integration:** Added `.github/workflows/ci.yml` (GitHub Actions) and `Jenkinsfile` for automated linting, typechecking, and coverage reporting on PRs and `main`. Includes test results and coverage visualizations for GitHub PRs.
 - **GitHub Templates:** Added standardized `PULL_REQUEST_TEMPLATE.md` and `ISSUE_TEMPLATE/*.yml` definitions reflecting the `movie-finder` multi-repo issue lifecycle.
+
+### Fixed
+
+- **CI Dependency Installation:** Replaced `make dev` with `make ci` in CI pipelines to prevent `pre-commit install` from crashing Jenkins runs with global hook paths.

@@ -9,7 +9,7 @@
 # These are stdio servers meant for local AI tooling integration.
 # =============================================================================
 
-.PHONY: help init lint format fix typecheck test test-coverage detect-secrets pre-commit check clean
+.PHONY: help init dev ci lint format fix typecheck test test-coverage detect-secrets pre-commit check clean
 
 .DEFAULT_GOAL := help
 
@@ -24,6 +24,7 @@ help:
 	@echo "=============================="
 	@echo "  init           Install dependencies and setup pre-commit"
 	@echo "  dev.           Install dev dependencies and setup pre-commit"
+	@echo "  ci             Install CI dependencies (lint, test) without pre-commit"
 	@echo "  lint           Run ruff check (report only)"
 	@echo "  format         Run ruff format (apply)"
 	@echo "  fix            Run ruff check --fix + ruff format (apply all auto-fixes)"
@@ -36,13 +37,15 @@ help:
 	@echo "  clean          Remove __pycache__, .pytest_cache, .mypy_cache, reports"
 
 init:
-	@if [ ! -f .env ]; then cp .env.example .env && echo ">>> .env created from .env.example"; fi
 	uv sync
 
 dev:
 	@if [ ! -f .env ]; then cp .env.example .env && echo ">>> .env created from .env.example"; fi
 	uv sync --dev
 	uv run pre-commit install
+
+ci:
+	uv sync --group ci
 
 lint:
 	uv run ruff check $(SOURCE_PATHS)

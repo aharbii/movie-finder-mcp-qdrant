@@ -35,7 +35,7 @@ pipeline {
                         fi
                     '''
                 }
-                sh 'make dev'
+                sh 'make ci'
             }
         }
 
