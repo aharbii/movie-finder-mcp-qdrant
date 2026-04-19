@@ -1,0 +1,29 @@
+---
+description: Python standards for the qdrant-explorer MCP server.
+globs: ["**/*.py"]
+alwaysApply: false
+---
+
+# Python Standards — mcp/qdrant-explorer
+
+All root Python standards apply. MCP-specific additions:
+
+## FastMCP pattern
+
+- Every tool function must have a descriptive docstring — this becomes the tool description in the MCP manifest
+- Tool parameters must use Pydantic models or typed primitives — no untyped `dict` parameters
+- Tool names must be snake_case and self-describing
+
+## Read-only invariant
+
+This server ONLY uses the **read-only** Qdrant API key (`QDRANT_API_KEY_RO`).
+Never accept or use a read-write key — even if passed in environment. Log a warning and refuse.
+
+## Testing
+
+```bash
+make test     # pytest
+make check    # lint + typecheck + test
+```
+
+MCP tool tests must mock `qdrant_client` — never call the live Qdrant cluster in CI.

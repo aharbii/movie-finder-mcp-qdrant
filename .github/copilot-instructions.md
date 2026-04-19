@@ -1,26 +1,36 @@
-# AI Agent Context — movie-finder-mcp-qdrant
+# GitHub Copilot — movie-finder-mcp-qdrant
 
-Foundational mandate for `movie-finder-mcp-qdrant` (`mcp/qdrant-explorer`).
+Local DX MCP server for querying Qdrant, embedding text, and evaluating RAG quality — runs via `stdio` only, never deployed to production.
 
-## What this submodule does
+> For full project context, persona prompts, and architecture reference: see root `.github/copilot-instructions.md`.
 
-Internal Model Context Protocol (MCP) server for local DX and AI tooling.
-It runs exclusively via `stdio` and is not deployed to production.
+---
 
-## Technology stack
+## Python standards
 
-- Python 3.13
-- `mcp` (FastMCP)
-- `uv` workspace
-- `pydantic` v2
+- FastMCP docstring-as-contract: the tool's docstring is the schema exposed to the MCP client — keep it accurate and concise
+- Tool names are breaking changes — renaming a tool breaks any client prompt that references it by name
+- All tools must be read-only: no writes to Qdrant, no side effects on production data
+- Dependencies stay isolated in local `uv.lock` — do not add packages that are also in the production backend
+- Run via `uv run` — required for Cursor, Claude Desktop, and other MCP clients
 
-## Coding standards
+---
 
-- **Line length:** 100 characters (`ruff`)
-- **Type annotations:** Required — `mypy --strict` must pass
-- **Dependencies:** Isolated in local `uv.lock`. Do not pollute production dependencies.
+## Design patterns
 
-## Workflow invariants
+| Pattern              | Rule                                                                                       |
+| -------------------- | ------------------------------------------------------------------------------------------ |
+| **Docstring-as-contract** | Every `@tool` function docstring defines the MCP tool schema. Write it for the AI client, not for human readers. |
+| **Read-only access** | Tools query or read data only. Any write operation is out of scope for this server.        |
+| **Typed returns**    | All tool return values use Pydantic v2 models — no raw dicts returned to the client.       |
 
-- This is a local DX utility.
-- Must execute via `uv run` for clients like Cursor or Claude Desktop.
+---
+
+## Key files
+
+| Path           | Description                                                         |
+| -------------- | ------------------------------------------------------------------- |
+| `server.py`    | FastMCP server entry point — tool registrations                     |
+| `tools/`       | Individual tool implementations (embed, search, compare, scroll)    |
+| `pyproject.toml` | Standalone `uv` project — isolated from production dependencies   |
+| `.mcp.json`    | (in repo root) MCP client configuration referencing this server     |

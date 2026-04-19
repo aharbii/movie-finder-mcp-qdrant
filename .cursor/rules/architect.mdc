@@ -1,0 +1,29 @@
+---
+description: Architect context for the qdrant-explorer MCP server. Activate for tool design, API contract decisions, or adding new Qdrant operations.
+alwaysApply: false
+---
+
+# Architect — mcp/qdrant-explorer
+
+## Role in architecture
+
+This MCP server is a **DX tool** — not a production service. It exposes Qdrant read operations to AI agents (Claude Code, Gemini CLI, Codex, Cursor) for RAG evaluation and debugging.
+
+## Contract
+
+The server's MCP manifest (tool names + parameter schemas + docstrings) is the contract. Any change to:
+- Tool name → breaking for any agent that references the tool by name
+- Parameter schema → may break existing agent prompts
+- Return type → may break agent parsing
+
+## Design rules
+
+- Add tools that serve distinct debugging use cases — do not add tools that duplicate existing ones
+- Tools must be stateless — no session state between calls
+- Read-only only — never expose write operations to Qdrant
+
+## When to write an ADR
+
+- Adding a new tool category (e.g., write operations, cross-collection queries)
+- Changing the authentication model
+- Adding a new external dependency

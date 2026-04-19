@@ -1,0 +1,24 @@
+# Movie Finder — qdrant-explorer MCP Cursor Rules
+
+This file is a legacy fallback. Cursor loads the richer MDC rules from `.cursor/rules/` automatically.
+
+If your IDE supports MDC rules, the following files apply:
+- `.cursor/rules/project.mdc` — always active (MCP server context, exposed tools)
+- `.cursor/rules/python.mdc` — activates on `**/*.py`
+- `.cursor/rules/architect.mdc` — activates when designing new MCP tools
+- `.cursor/rules/developer.mdc` — activates when implementing issues
+
+---
+
+## Quick reference
+
+**Repo:** `aharbii/movie-finder-mcp-qdrant` · Primary context: `CLAUDE.md`
+
+**Non-negotiables:**
+- `mypy --strict` must pass — no `type: ignore` without explanatory comment
+- No bare `except:` — catch specific types
+- No `print()` — use logging
+- Must run via `uv run` (stdio) — no runtime installation required
+- Dependencies isolated in local `uv.lock` — never pollute production workspace
+- Conventional Commits: `feat(mcp): summary`
+- Disclose AI tool + model in every PR

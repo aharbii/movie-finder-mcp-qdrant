@@ -1,0 +1,52 @@
+---
+description: Movie Finder — qdrant-explorer MCP context. Always active.
+alwaysApply: true
+---
+
+# mcp/qdrant-explorer — Qdrant RAG Evaluator
+
+This is `movie-finder-mcp-qdrant` (`mcp/qdrant-explorer/`) — local DX tool for evaluating RAG quality.
+GitHub repo: `aharbii/movie-finder-mcp-qdrant` · Tracker: `aharbii/movie-finder`
+**Status: ✅ Ready** — actively used by Claude Code and other MCP clients.
+
+## What this server does
+
+MCP server exposing Qdrant operations to AI agents via stdio. Used for debugging RAG quality, testing embeddings, and evaluating semantic search during development.
+
+## Exposed MCP tools
+
+| Tool                        | Purpose                                          |
+|-----------------------------|--------------------------------------------------|
+| `qdrant_search`             | Semantic search using a text query               |
+| `get_movie_data`            | Fetch full movie record by title (exact match)   |
+| `embed_text`                | Generate embedding and return vector             |
+| `compare_cosine_similarity` | Compare similarity between two text strings      |
+| `filtered_search`           | Search with metadata filter conditions           |
+| `get_collection_status`     | Collection health, vector count, config          |
+| `get_similar_movies_by_title`| Find similar movies to a known title            |
+| `scroll_movies_by_director` | Scroll collection by director metadata           |
+
+## Stack
+
+- Python 3.13, `mcp` (FastMCP), `uv` standalone project, Pydantic v2
+- Runs via `stdio` — not deployed to production
+- Connects to Qdrant Cloud (uses `QDRANT_URL` + `QDRANT_API_KEY_RO` read-only key)
+
+## Quality checks
+
+```bash
+make test
+make lint
+make typecheck
+```
+
+## Non-negotiables
+
+- Runs via `uv run` — do not add global package dependencies
+- Read-only Qdrant key (`QDRANT_API_KEY_RO`) for all search tools — never write in MCP tools
+- `mypy --strict` must pass
+- Never `git add -A`, never `--no-verify`, Conventional Commits
+
+## Personas available
+
+`/developer` (new MCP tools), `/sdet` (tool response validation), `/architect` (MCP API contract design).

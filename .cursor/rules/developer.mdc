@@ -1,0 +1,34 @@
+---
+description: Developer workflow for qdrant-explorer MCP server. Activate when implementing a GitHub issue in this repo.
+alwaysApply: false
+---
+
+# Developer — mcp/qdrant-explorer
+
+## Workflow
+
+1. `gh issue view <N> --repo aharbii/movie-finder-mcp-qdrant`
+2. Find `## Agent Briefing` — if missing, stop
+3. Read only the files listed in the briefing
+4. Create branch from `main`
+5. Implement, run `make check`
+6. Commit → PR in `aharbii/movie-finder-mcp-qdrant`
+
+## Quality checks
+
+```bash
+make check    # ruff + mypy --strict + pytest
+```
+
+## Key constraint
+
+`QDRANT_API_KEY_RO` only — never use the read-write key. Verify in code review.
+
+## After PR merges
+
+```bash
+# mcp/qdrant-explorer is a root-level submodule with update=none
+# Update parent pointer explicitly:
+git add mcp/qdrant-explorer
+git commit -m "chore(mcp/qdrant-explorer): bump to latest main"
+```
