@@ -9,14 +9,14 @@ def test_rag_config_valid(monkeypatch: pytest.MonkeyPatch) -> None:
     monkeypatch.setenv("QDRANT_URL", "http://test-qdrant:6333")
     monkeypatch.setenv("QDRANT_API_KEY_RO", "test-qdrant-key")
     monkeypatch.setenv("OPENAI_API_KEY", "test-openai-key")
-    monkeypatch.setenv("QDRANT_COLLECTION_NAME", "custom-collection")
+    monkeypatch.setenv("VECTOR_STORE_TARGET_NAME", "custom-collection")
 
     config = RAGConfig()
 
     assert config.qdrant_url == "http://test-qdrant:6333"
     assert config.qdrant_api_key_ro == "test-qdrant-key"
     assert config.openai_api_key == "test-openai-key"
-    assert config.qdrant_collection_name == "custom-collection"
+    assert config.vector_store_target_name == "custom-collection"
 
 
 def test_rag_config_defaults(monkeypatch: pytest.MonkeyPatch) -> None:
@@ -27,13 +27,13 @@ def test_rag_config_defaults(monkeypatch: pytest.MonkeyPatch) -> None:
 
     # We must explicitly delete the env vars that might exist in the local .env
     # so we can strictly test the Pydantic default fallback logic.
-    monkeypatch.delenv("QDRANT_COLLECTION_NAME", raising=False)
+    monkeypatch.delenv("VECTOR_STORE_TARGET_NAME", raising=False)
     monkeypatch.delenv("OPENAI_EMBEDDING_MODEL", raising=False)
 
     # Pass _env_file=None to ignore any local .env file created by `make dev`
     config = RAGConfig(_env_file=None)
 
-    assert config.qdrant_collection_name == "text-embedding-3-large"
+    assert config.vector_store_target_name == "movies_text_embedding_3_large_3072"
     assert config.openai_embedding_model == "text-embedding-3-large"
 
 

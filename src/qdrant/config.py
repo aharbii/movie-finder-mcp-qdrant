@@ -14,8 +14,8 @@ class RAGConfig(BaseSettings):
     # Qdrant Cloud
     qdrant_url: str = Field(..., validation_alias="QDRANT_URL")
     qdrant_api_key_ro: str = Field(..., validation_alias="QDRANT_API_KEY_RO")
-    qdrant_collection_name: str = Field(
-        "text-embedding-3-large", validation_alias="QDRANT_COLLECTION_NAME"
+    vector_store_target_name: str = Field(
+        "movies_text_embedding_3_large_3072", validation_alias="VECTOR_STORE_TARGET_NAME"
     )
 
     # OpenAI
