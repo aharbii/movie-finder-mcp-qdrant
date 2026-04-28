@@ -72,7 +72,7 @@ Add the following to your `claude_desktop_config.json`:
         "OPENAI_API_KEY": "sk-your-key",
         "QDRANT_URL": "http://localhost:6333",
         "QDRANT_API_KEY_RO": "your-qdrant-key",
-        "QDRANT_COLLECTION_NAME": "movies"
+        "VECTOR_STORE_TARGET_NAME": "movies_text_embedding_3_large_3072"
       }
     }
   }
