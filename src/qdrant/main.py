@@ -73,7 +73,7 @@ def qdrant_search(query: str, limit: int = 5) -> list[QdrantSearchResult]:
         )
         results = qdrant_client.query_points(
             query=query_vector.data[0].embedding,
-            collection_name=settings.qdrant_collection_name,
+            collection_name=settings.vector_store_target_name,
             with_payload=True,
             limit=limit,
         )
@@ -111,7 +111,7 @@ def get_movie_data(title: str) -> list[dict[str, Any]]:
 
         records, _ = qdrant_client.scroll(
             scroll_filter=movie_filter,
-            collection_name=settings.qdrant_collection_name,
+            collection_name=settings.vector_store_target_name,
             limit=5,
             with_payload=True,
             with_vectors=False,
@@ -203,7 +203,7 @@ def get_collection_status() -> dict[str, Any]:
         qdrant_client = get_qdrant_client()
 
         collection_info = qdrant_client.get_collection(
-            collection_name=settings.qdrant_collection_name
+            collection_name=settings.vector_store_target_name
         )
         return collection_info.model_dump()
     except Exception as e:
@@ -239,7 +239,7 @@ def filtered_search(query: str, genre: str, limit: int = 5) -> list[QdrantSearch
 
         results = qdrant_client.query_points(
             query=query_vector.data[0].embedding,
-            collection_name=settings.qdrant_collection_name,
+            collection_name=settings.vector_store_target_name,
             with_payload=True,
             limit=limit,
             query_filter=genre_filter,
@@ -279,7 +279,7 @@ def scroll_movies_by_director(director: str, limit: int = 5) -> list[dict[str, A
 
         records, _ = qdrant_client.scroll(
             scroll_filter=director_filter,
-            collection_name=settings.qdrant_collection_name,
+            collection_name=settings.vector_store_target_name,
             limit=limit,
             with_payload=True,
             with_vectors=False,

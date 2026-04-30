@@ -32,6 +32,11 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 ### Changed
 
 - **Architecture:** Refactored `qdrant.config` and `qdrant.main` to use `lru_cache` lazy instantiation (`get_settings()`, `get_openai_client()`, `get_qdrant_client()`). This aligns the MCP server with the FastAPI backend's dependency injection patterns, removes the need to patch `os.environ` in `conftest.py`, and prevents Pydantic `ValidationError` crashes during `pytest` collection on CI servers.
+- **Vector target contract:** Replaced the Qdrant-specific collection-name setting with `VECTOR_STORE_TARGET_NAME`, defaulting to the resolved ADR 0008 collection name `movies_text_embedding_3_large_3072`.
+
+### Breaking Changes
+
+- `QDRANT_COLLECTION_NAME` is no longer read. Set `VECTOR_STORE_TARGET_NAME` to the fully resolved collection name produced by the RAG ingestion and chain naming contract.
 
 ### Security
 
